@@ -1,0 +1,8 @@
+bailian:
+  url: https://llm-ouyh4kjmodihskqy.cn-beijing.maas.aliyuncs.com/api/v1
+  text:
+    name: qwen3.8-flash
+  embedding:
+    name: qwen3.7-text-embedding-flash
+  rerank:
+    name: qwen3.7-text-rerank
