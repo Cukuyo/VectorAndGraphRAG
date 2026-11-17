@@ -4,18 +4,25 @@ import com.alibaba.dashscope.embeddings.TextEmbedding;
 import com.alibaba.dashscope.embeddings.TextEmbeddingParam;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 
-import java.util.List;
-
 public class TextEmbeddingUtil {
     private static final TextEmbedding TEXT_EMBEDDING = new TextEmbedding();
 
-    private static List<Double> embedding(String text) throws NoApiKeyException {
+    public static double[] embedding(String text) {
         TextEmbeddingParam param = TextEmbeddingParam
                 .builder()
-                .apiKey(Config.apiKey)
-                .model(Config.embeddingModel)
+                .apiKey(Config.API_KEY)
+                .model(Config.EMBEDDING_MODEL)
+                .dimension(1024)
                 .text(text)
                 .build();
-        return TEXT_EMBEDDING.call(param).getOutput().getEmbeddings().get(0).getEmbedding();
+
+        try {
+            return TEXT_EMBEDDING.call(param).getOutput().getEmbeddings().getFirst().getEmbedding()
+                    .stream()
+                    .mapToDouble(Double::doubleValue)
+                    .toArray();
+        } catch (NoApiKeyException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

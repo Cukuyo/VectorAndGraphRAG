@@ -1,0 +1,29 @@
+// 1. 唯一性约束（主键，防止重复节点）
+CREATE CONSTRAINT person_name_constraint IF NOT EXISTS
+FOR (n:Person) REQUIRE n.name IS UNIQUE;
+
+CREATE CONSTRAINT university_name_constraint IF NOT EXISTS
+FOR (n:University) REQUIRE n.name IS UNIQUE;
+
+CREATE CONSTRAINT work_title_constraint IF NOT EXISTS
+FOR (n:Work) REQUIRE n.title IS UNIQUE;
+
+CREATE CONSTRAINT textchunk_sourceid_constraint IF NOT EXISTS
+FOR (n:TextChunk) REQUIRE n.source_id IS UNIQUE;
+
+// 2. 向量索引（你用1536维、cosine，OpenAI格式）
+CREATE VECTOR INDEX person_vector_index IF NOT EXISTS
+FOR (n:TextChunk) ON (n.embedding)
+OPTIONS {
+  indexConfig: {
+    `vector.dimensions`: 1024,
+    `vector.similarity_function`: 'cosine'
+  }
+};
+
+// 可选：普通文本索引，like/contains加速（中文检索辅助）
+CREATE TEXT INDEX person_name_text IF NOT EXISTS
+FOR (n:Person) ON (n.name);
+
+CREATE TEXT INDEX textchunk_content_text IF NOT EXISTS
+FOR (n:TextChunk) ON (n.content);
