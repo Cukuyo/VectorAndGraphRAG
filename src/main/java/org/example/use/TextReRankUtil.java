@@ -11,7 +11,7 @@ import java.util.List;
 public class TextReRankUtil {
     private static final TextReRank TEXT_RERANK = new TextReRank();
 
-    private static List<String> reRank(String query, List<String> documents, int topN, double threshold) {
+    public static List<String> reRank(String query, List<String> documents, int topN, double threshold) {
         TextReRankParam param = TextReRankParam
                 .builder()
                 .apiKey(Config.API_KEY)

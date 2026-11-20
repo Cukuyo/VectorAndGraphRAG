@@ -2,8 +2,10 @@ package org.example.data;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
@@ -20,24 +22,31 @@ public class Main {
 
         for (PersonEntity personEntity : personEntityList) {
             neo4JDataClient.addPerson(personEntity);
+            System.out.printf("add %s\n", personEntity.get中文名());
         }
 
         for (PersonEntity personEntity : personEntityList) {
             for (String university : personEntity.get毕业于()) {
                 neo4JDataClient.addPersonToUniversity(personEntity.get中文名(), university);
+                System.out.printf("add %s %s\n", personEntity.get中文名(), university);
             }
         }
 
         for (PersonEntity personEntity : personEntityList) {
-            for (String workTitle : personEntity.get作品()) {
-                neo4JDataClient.addPersonToWork(personEntity.get中文名(), workTitle);
+            for (String workName : personEntity.get作品()) {
+                neo4JDataClient.addPersonToWork(personEntity.get中文名(), workName);
+                System.out.printf("add %s %s\n", personEntity.get中文名(), workName);
             }
         }
 
         for (PersonEntity personEntity : personEntityList) {
             for (Map.Entry<String, List<String>> entry : personEntity.get相关人物().entrySet()) {
+                if (entry.getKey().equals("未知")) {
+                    continue;
+                }
                 for (String toName : entry.getValue()) {
-                    neo4JDataClient.addPersonToPerson(personEntity.get中文名(), entry.getKey(), toName);
+                    neo4JDataClient.addPersonToPerson(personEntity.get中文名(), switchRel(entry.getKey()), toName);
+                    System.out.printf("add %s %s %s\n", personEntity.get中文名(), entry.getKey(), toName);
                 }
             }
         }
@@ -49,5 +58,13 @@ public class Main {
         }
 
         neo4JDataClient.close();
+    }
+
+    static String switchRel(String key) {
+        if (key.equals("好友") || key.equals("同学") || key.equals("战友")) {
+            return String.format("-[:%s]-", key);
+        } else {
+            return String.format("-[:%s]->", key);
+        }
     }
 }

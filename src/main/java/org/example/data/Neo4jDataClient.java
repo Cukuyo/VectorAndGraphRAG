@@ -56,11 +56,11 @@ public class Neo4jDataClient {
     public void addPersonToWork(String personName, String workTitle) {
         String cypher = """
                 MERGE (p:Person{name:$pName})
-                MERGE (w:Work{title:$wTitle})
+                MERGE (w:Work{name:$wName})
                 MERGE (p)-[:HAS_WORK]->(w)
                 """;
         try (Session session = driver.session()) {
-            session.run(cypher, Values.parameters("pName", personName, "wTitle", workTitle));
+            session.run(cypher, Values.parameters("pName", personName, "wName", workTitle));
         }
     }
 
@@ -68,7 +68,7 @@ public class Neo4jDataClient {
         String cypher = String.format("""
                 MERGE (a:Person{name:$aName})
                 MERGE (b:Person{name:$bName})
-                MERGE (a)-[:%s]->(b)
+                MERGE (a)%s(b)
                 """, relType);
         try (Session session = driver.session()) {
             session.run(cypher, Values.parameters("aName", fromName, "bName", toName));
