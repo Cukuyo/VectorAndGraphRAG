@@ -1,3 +1,6 @@
+docker pull neo4j
+docker run (配置)......
+
 // 1. 唯一性约束（主键，防止重复节点）
 CREATE CONSTRAINT person_name_constraint IF NOT EXISTS
 FOR (n:Person) REQUIRE n.name IS UNIQUE;
