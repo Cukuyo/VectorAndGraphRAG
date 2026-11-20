@@ -45,7 +45,7 @@ public class Main {
                     continue;
                 }
                 for (String toName : entry.getValue()) {
-                    neo4JDataClient.addPersonToPerson(personEntity.get中文名(), switchRel(entry.getKey()), toName);
+                    neo4JDataClient.addPersonToPerson(personEntity.get中文名(), entry.getKey(), toName);
                     System.out.printf("add %s %s %s\n", personEntity.get中文名(), entry.getKey(), toName);
                 }
             }
@@ -58,13 +58,5 @@ public class Main {
         }
 
         neo4JDataClient.close();
-    }
-
-    static String switchRel(String key) {
-        if (key.equals("好友") || key.equals("同学") || key.equals("战友")) {
-            return String.format("-[:%s]-", key);
-        } else {
-            return String.format("-[:%s]->", key);
-        }
     }
 }

@@ -68,7 +68,7 @@ public class Neo4jDataClient {
         String cypher = String.format("""
                 MERGE (a:Person{name:$aName})
                 MERGE (b:Person{name:$bName})
-                MERGE (a)%s(b)
+                MERGE (a)-[:%s]->(b)
                 """, relType);
         try (Session session = driver.session()) {
             session.run(cypher, Values.parameters("aName", fromName, "bName", toName));
